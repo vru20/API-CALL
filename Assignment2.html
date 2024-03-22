@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Data</title>
+  <style>
+    .spinner {
+      display: none;
+      /* Add your spinner styles here */
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div class="spinner">Loading...</div>
+  <table class="data-container">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Email</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Avatar</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- User data will be displayed here -->
+    </tbody>
+  </table>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const apiUrl = 'https://reqres.in/api/users';
+      const spinner = document.querySelector('.spinner');
+      const tbody = document.querySelector('.data-container tbody');
+
+      spinner.style.display = 'block';
+
+      fetch(apiUrl)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          
+          spinner.style.display = 'none';
+          
+          displayUserData(data.data);
+        })
+        .catch(error => {
+          console.error('Fetch error:', error);
+         
+          spinner.style.display = 'none';
+         
+          tbody.innerHTML = '<tr><td colspan="5">Failed to fetch user data. Please try again later.</td></tr>';
+        });
+
+      function displayUserData(users) {
+        
+        users.forEach(user => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${user.id}</td>
+            <td>${user.email}</td>
+            <td>${user.first_name}</td>
+            <td>${user.last_name}</td>
+            <td><img src="${user.avatar}" alt="${user.first_name} ${user.last_name}" style="width: 50px;"></td>
+          `;
+          tbody.appendChild(row);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
+
